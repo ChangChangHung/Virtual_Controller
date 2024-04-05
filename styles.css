@@ -1,0 +1,60 @@
+body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    margin: 20px;
+    background-color: #f4f4f4; /* New background color */
+}
+
+h1 {
+    color: #333;
+}
+
+h2 {
+    margin-top: 20px;
+    color: #555;
+}
+
+button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+#video-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    background-color: #f0f0f0;
+}
+
+#video-stream {
+    width: 80%;
+    border: 2px solid #333;  /* 添加邊框 */
+    border-radius: 8px;     /* 添加圓角 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  /* 添加陰影效果 */
+    max-width: 800px;       /* 設置最大寬度 */
+}
+/***** Thumb Styles *****/
+/***** Chrome, Safari, Opera, and Edge Chromium *****/
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    margin-top: -12px; /* Centers thumb on the track */
+    background-color: #5cd5eb;
+    height: 2rem;
+    width: 1rem;
+      
+ }

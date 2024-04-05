@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Remote Control</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
+</head>
+<body>
+    <h1>Virtual Remote Control</h1>
+
+    <div>
+        <h2>Direction Control</h2>
+        <button onclick="sendCommand('turn_left')">Turn Left</button>
+        <button onclick="sendCommand('turn_right')">Turn Right</button>
+    </div>
+
+    <div>
+        <h2>Speed Control</h2>
+        <input type="range" min="0" max="100" value="50" id="speedRange" onchange="changeSpeed(this.value)">
+        <p>Current Speed: <span id="speedValue">50</span></p>
+    </div>
+
+    <h1>Remote Surveillance</h1>
+
+    <div id="video-container">
+        <video id="video-stream" autoplay></video>
+    </div>
+
+    <script>
+        const videoContainer = document.getElementById('video-container');
+        const videoStream = document.getElementById('video-stream');
+        const speedRange = document.getElementById('speedRange');
+        const speedValueDisplay = document.getElementById('speedValue');
+
+        const socket = new WebSocket('ws://' + window.location.host + '/video-feed');
+
+        socket.addEventListener('message', function (event) {
+            // 接收到攝像頭畫面數據，更新 video 元素的 src
+            videoStream.src = 'data:image/jpeg;base64,' + event.data;
+        });
+
+        socket.addEventListener('close', function (event) {
+            console.error('WebSocket closed unexpectedly:', event);
+        });
+
+        function sendCommand(command) {
+            // 使用 fetch API 將指令發送到伺服器
+            fetch('/control', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ command: command }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                console.log('Command sent successfully');
+            })
+            .catch(error => {
+                console.error('Error sending command:', error);
+            });
+        }
+
+        function changeSpeed(speed) {
+            // 更新顯示的速度值
+            speedValueDisplay.textContent = speed;
+            // 將速度值發送到伺服器
+            sendCommand('set_speed_' + speed);
+        }
+    </script>
+</body>
+</html>
