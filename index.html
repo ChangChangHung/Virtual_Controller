@@ -11,14 +11,14 @@
 
     <div>
         <h2>Direction Control</h2>
-        <button onclick="sendCommand('turn_left')">Turn Left</button>
-        <button onclick="sendCommand('turn_right')">Turn Right</button>
+        <input type="range" min="1" max="50" value="25" id="turningRange" onchange="changeturning(this.value)">
+        <p>Current turning: <span id="turningValue">25</span></p>
     </div>
 
     <div>
         <h2>Speed Control</h2>
-        <input type="range" min="0" max="100" value="50" id="speedRange" onchange="changeSpeed(this.value)">
-        <p>Current Speed: <span id="speedValue">50</span></p>
+        <input type="range" min="1" max="1000" value="500" id="speedRange" onchange="changeSpeed(this.value)">
+        <p>Current Speed: <span id="speedValue">500</span></p>
     </div>
 
     <h1>Remote Surveillance</h1>
@@ -32,20 +32,18 @@
         const videoStream = document.getElementById('video-stream');
         const speedRange = document.getElementById('speedRange');
         const speedValueDisplay = document.getElementById('speedValue');
-
+        const turningRange = document.getElementById('turningRange');
+        const turningValueDisplay = document.getElementById('turningValue');
         const socket = new WebSocket('ws://' + window.location.host + '/video-feed');
-
         socket.addEventListener('message', function (event) {
             // 接收到攝像頭畫面數據，更新 video 元素的 src
             videoStream.src = 'data:image/jpeg;base64,' + event.data;
         });
-
         socket.addEventListener('close', function (event) {
             console.error('WebSocket closed unexpectedly:', event);
         });
 
         function sendCommand(command) {
-            // 使用 fetch API 將指令發送到伺服器
             fetch('/control', {
                 method: 'POST',
                 headers: {
@@ -64,10 +62,12 @@
             });
         }
 
+        function changeturning(index) {
+            turningValueDisplay.textContent = index;
+            sendCommand('set_turning_' + index);
+        }
         function changeSpeed(speed) {
-            // 更新顯示的速度值
             speedValueDisplay.textContent = speed;
-            // 將速度值發送到伺服器
             sendCommand('set_speed_' + speed);
         }
     </script>
